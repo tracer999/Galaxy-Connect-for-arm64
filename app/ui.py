@@ -2,10 +2,12 @@
 import ctypes
 import queue
 import re
+import sys
 import threading
 import tkinter as tk
 import tkinter.font as tkfont
 from datetime import datetime
+from pathlib import Path
 
 from i18n import LANGS, STRINGS, default_lang
 
@@ -21,6 +23,8 @@ C = {
 }
 
 WIDTH, HEIGHT = 780, 600
+# make_icon.py 로 만든 아이콘. 묶은 exe 에서는 풀린 임시 폴더에 있다
+ICON = Path(getattr(sys, '_MEIPASS', Path(__file__).resolve().parent)) / 'icon.ico'
 
 # 화면 배율(DPI). Tk() 를 만든 뒤 setup() 에서 정한다
 SCALE = 1.0
@@ -588,6 +592,8 @@ def run(backend):
     root = tk.Tk()
     setup(root)
     root.title(backend.APP_NAME)
+    # default= 로 주면 대화상자(Toplevel)에도 같은 아이콘이 붙는다
+    root.iconbitmap(default=str(ICON))
     root.configure(bg=C['bg'])
     root.geometry(f'{px(WIDTH)}x{px(HEIGHT)}')
     root.minsize(px(WIDTH), px(HEIGHT))

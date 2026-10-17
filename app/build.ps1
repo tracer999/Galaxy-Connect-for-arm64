@@ -28,8 +28,10 @@ $version = & $venvPython -c "import sys; sys.path.insert(0, r'$PSScriptRoot'); i
 $name = "GalaxyConnectForARM64-$version-arm64-portable"
 $data = @('Apply.ps1', 'Backup.ps1', 'Restore.ps1', 'Status.ps1') | ForEach-Object { '--add-data', "$(Join-Path $root $_);scripts" }
 $data += '--add-data', "$(Join-Path $root 'lib');scripts\lib"
+$icon = Join-Path $PSScriptRoot 'icon.ico'
+$data += '--add-data', "$icon;."
 
-& $venvPython -m PyInstaller --noconfirm --clean --onefile --windowed --name $name `
+& $venvPython -m PyInstaller --noconfirm --clean --onefile --windowed --name $name --icon $icon `
     --distpath (Join-Path $PSScriptRoot 'release') `
     --workpath (Join-Path $PSScriptRoot 'build') `
     --specpath (Join-Path $PSScriptRoot 'build') `
