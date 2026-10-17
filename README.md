@@ -256,16 +256,20 @@ To remove the tool completely after restoring:
 
 ### Building the app from source
 
-Requires Node.js 22 or later.
+Requires **Python 3.12 or later for ARM64** (from python.org, with tkinter, which the installer includes).
+An x64 Python would produce an exe that runs under emulation, so the build script refuses it.
 
 ```powershell
 cd app
-npm install
-npm start        # build the UI and run the app without packaging
-npm run dist     # create app\release\GalaxyConnectForARM64-<version>-arm64-portable.exe
+python main.py              # run the app from source
+python main.py --mock       # show the screen with sample data (changes nothing)
+.\build.ps1                 # create app\release\GalaxyConnectForARM64-<version>-arm64-portable.exe
 ```
 
-The UI is Electron + React. It only displays information and runs the PowerShell scripts in the
+`build.ps1` creates `app\.venv`, installs PyInstaller and builds a single exe (about 11 MB).
+If `python` is not the ARM64 one, pass its path: `.\build.ps1 -Python 'C:\Program Files\Python314-arm64\python.exe'`.
+
+The UI is Python + tkinter. It only displays information and runs the PowerShell scripts in the
 repository root; all changes are made by those scripts.
 
 ### Project structure
@@ -277,7 +281,7 @@ repository root; all changes are made by those scripts.
 | `Restore.ps1` | Restore the original values |
 | `Status.ps1` | Show status and detection log (`-Json` for the app) |
 | `lib\Common.ps1` | Shared functions |
-| `app\` | Desktop app (Electron + React) |
+| `app\` | Desktop app (Python + tkinter) and its build script |
 | `docs\` | Screenshots for this README |
 | `backup\` | Backups made by the scripts. Contains device information; excluded from Git |
 
@@ -532,16 +536,20 @@ Galaxy Connect는 재부팅해도 계속 동작합니다. 아래 경우에만 **
 
 ### 앱 직접 빌드하기
 
-Node.js 22 이상이 필요합니다.
+**ARM64용 Python 3.12 이상**이 필요합니다(python.org 설치 파일, tkinter 포함).
+x64 Python으로 빌드하면 에뮬레이션으로 도는 exe가 만들어지므로 빌드 스크립트가 막습니다.
 
 ```powershell
 cd app
-npm install
-npm start        # 패키징 없이 UI를 빌드해서 바로 실행
-npm run dist     # app\release\GalaxyConnectForARM64-<버전>-arm64-portable.exe 생성
+python main.py              # 소스에서 바로 실행
+python main.py --mock       # 예시 데이터로 화면만 확인 (아무것도 바꾸지 않음)
+.\build.ps1                 # app\release\GalaxyConnectForARM64-<버전>-arm64-portable.exe 생성
 ```
 
-UI는 Electron + React로 만들었습니다. 정보를 보여 주고 저장소 루트의 PowerShell 스크립트를
+`build.ps1`은 `app\.venv`를 만들고 PyInstaller를 설치한 뒤 exe 하나(약 11MB)로 빌드합니다.
+`python`이 ARM64용이 아니면 경로를 지정하세요: `.\build.ps1 -Python 'C:\Program Files\Python314-arm64\python.exe'`
+
+UI는 Python + tkinter로 만들었습니다. 정보를 보여 주고 저장소 루트의 PowerShell 스크립트를
 실행하는 역할만 하며, 실제 변경은 모두 스크립트가 합니다.
 
 ### 파일 구성
@@ -553,7 +561,7 @@ UI는 Electron + React로 만들었습니다. 정보를 보여 주고 저장소 
 | `Restore.ps1` | 원래 값으로 복원 |
 | `Status.ps1` | 상태와 판정 로그 확인 (`-Json`은 앱용) |
 | `lib\Common.ps1` | 공통 함수 |
-| `app\` | 데스크톱 앱 (Electron + React) |
+| `app\` | 데스크톱 앱 (Python + tkinter)과 빌드 스크립트 |
 | `docs\` | README용 스크린샷 |
 | `backup\` | 스크립트가 만든 백업. 기기 정보가 들어 있어 Git에서 제외됩니다 |
 
